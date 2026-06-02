@@ -5,33 +5,43 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>KU School of Business | Campaign Performance Dashboard</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
-  --ku-blue:       #0051A5;
-  --ku-blue-dark:  #002147;
-  --ku-crimson:    #E8000D;
-  --ku-crimson-dk: #A50009;
-  --ku-navy:       #001A3A;
-  --ku-gold:       #F0A500;
-  --ku-bg:         #F4F6FA;
+  /* KU official palette — brand.ku.edu */
+  --ku-blue:       #0051ba;   /* Kansas Blue */
+  --ku-blue-dark:  #003459;   /* Night */
+  --ku-blue-deep:  #003171;   /* Kansas Blue shade 4 */
+  --ku-crimson:    #e8000d;   /* Crimson */
+  --ku-crimson-dk: #b90009;   /* Crimson shade 3 */
+  --ku-navy:       #003459;   /* Night — headings */
+  --ku-gold:       #f2a900;   /* Wheat */
+  --ku-yellow:     #ffc82d;   /* Jayhawk Yellow */
+  --ku-bg:         #f2f5f8;   /* Steam shade 2 */
   --ku-white:      #FFFFFF;
-  --ku-border:     #DDE3EE;
-  --ku-light:      #EEF1F7;
-  --ku-text:       #001A3A;
-  --ku-muted:      #5A6A82;
+  --ku-border:     #dde5ed;   /* Steam */
+  --ku-light:      #e7ecf2;   /* Steam shade 1 */
+  --ku-text:       #333333;   /* Text Gray */
+  --ku-muted:      #607089;   /* Fog-derived slate */
   --ku-good:       #16A34A;
   --ku-good-bg:    #F0FDF4;
   --ku-bad:        #DC2626;
   --ku-bad-bg:     #FEF2F2;
-  --ku-warn:       #D97706;
+  --ku-warn:       #b45309;
   --ku-warn-bg:    #FFFBEB;
   --col-meta:      #1877F2;
   --col-linkedin:  #0A66C2;
   --col-rollworks: #FF6B35;
   --col-youtube:   #FF0000;
+  --font-head: 'Archivo','Segoe UI',Arial,Helvetica,sans-serif;
+  --font-body: 'Public Sans','Segoe UI',Arial,Helvetica,sans-serif;
 }
 *, *::before, *::after { box-sizing: border-box; }
-html, body { margin:0; padding:0; background:var(--ku-bg); font-family:'Segoe UI',Arial,Helvetica,sans-serif; color:var(--ku-text); line-height:1.5; font-size:14px; }
+html, body { margin:0; padding:0; background:var(--ku-bg); font-family:var(--font-body); color:var(--ku-text); line-height:1.5; font-size:14px; -webkit-font-smoothing:antialiased; }
+h1,h2,h3,h4,h5 { font-family:var(--font-head); }
+.m-value, .perf-stat .num, .stat-box .val, .kpi-hero .val, .goal-pct, .plan-ramp .jump .to { font-family:var(--font-head); font-feature-settings:'tnum' 1; }
 
 /* HEADER */
 .site-header { background:var(--ku-blue-dark); padding:0 32px; display:flex; align-items:stretch; position:sticky; top:0; z-index:100; box-shadow:0 2px 16px rgba(0,0,0,.4); overflow:hidden; min-height:72px; }
@@ -42,8 +52,8 @@ html, body { margin:0; padding:0; background:var(--ku-bg); font-family:'Segoe UI
     135deg,
     transparent,
     transparent 8px,
-    rgba(0,81,165,.18) 8px,
-    rgba(0,81,165,.18) 16px
+    rgba(39,103,255,.20) 8px,
+    rgba(39,103,255,.20) 16px
   );
   pointer-events:none;
 }
@@ -98,7 +108,7 @@ html, body { margin:0; padding:0; background:var(--ku-bg); font-family:'Segoe UI
 .plat-chip-dot { width:7px; height:7px; border-radius:50%; }
 
 /* PERFORMANCE SUMMARY — headline + insights */
-.perf-headline { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:20px; }
+.perf-headline { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:20px; }
 .perf-stat { background:var(--ku-light); border:1px solid var(--ku-border); border-radius:12px; padding:16px 14px; text-align:center; position:relative; overflow:hidden; }
 .perf-stat::before { content:''; position:absolute; left:0; top:0; bottom:0; width:4px; background:var(--ku-blue); }
 .perf-stat .num { font-size:30px; font-weight:900; color:var(--ku-navy); line-height:1; letter-spacing:-.02em; }
@@ -115,6 +125,76 @@ html, body { margin:0; padding:0; background:var(--ku-bg); font-family:'Segoe UI
 .pi-badge { display:inline-block; font-size:9.5px; font-weight:800; text-transform:uppercase; letter-spacing:.04em; padding:2px 8px; border-radius:20px; background:var(--ku-good-bg); color:var(--ku-good); margin-left:4px; }
 .pi-badge.soon { background:var(--ku-warn-bg); color:var(--ku-warn); }
 @media (max-width:720px){ .perf-headline { grid-template-columns:repeat(2,1fr); } .perf-insight { flex-direction:column; align-items:flex-start; gap:6px; } }
+
+/* ABM EXPLAINER */
+.abm-explainer { background:var(--ku-white); border:1px solid var(--ku-border); border-radius:14px; padding:24px 28px; margin-bottom:28px; }
+.abm-explainer > .lead { font-size:13px; color:var(--ku-muted); font-weight:600; margin:0 0 20px; line-height:1.6; }
+.abm-sub { font-size:12px; font-weight:900; color:var(--ku-navy); text-transform:uppercase; letter-spacing:.06em; margin:22px 0 12px; display:flex; align-items:center; gap:8px; }
+.abm-sub:first-of-type { margin-top:0; }
+.abm-sub .ic { width:22px; height:22px; border-radius:6px; background:var(--ku-light); display:inline-flex; align-items:center; justify-content:center; font-size:12px; }
+.abm-two { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.abm-box { border:1px solid var(--ku-border); border-radius:12px; padding:16px 18px; background:var(--ku-light); position:relative; overflow:hidden; }
+.abm-box::before { content:''; position:absolute; left:0; top:0; bottom:0; width:4px; background:var(--col-rollworks); }
+.abm-box h4 { margin:0 0 4px; font-size:12px; font-weight:900; color:var(--ku-navy); text-transform:uppercase; letter-spacing:.04em; }
+.abm-box .big { font-size:26px; font-weight:900; color:var(--ku-navy); line-height:1; letter-spacing:-.02em; }
+.abm-box .big small { font-size:11px; font-weight:700; color:var(--ku-muted); text-transform:uppercase; letter-spacing:.04em; }
+.abm-box p { font-size:12.5px; line-height:1.55; color:var(--ku-text); margin:8px 0 0; }
+.abm-note { display:flex; gap:12px; align-items:flex-start; background:var(--ku-light); border:1px solid var(--ku-border); border-left:4px solid var(--ku-blue); border-radius:10px; padding:13px 16px; font-size:12.5px; line-height:1.6; color:var(--ku-text); }
+.abm-note .ic { font-size:18px; line-height:1; }
+.abm-flow { display:grid; grid-template-columns:1fr auto 1fr auto 1fr; align-items:stretch; gap:0; }
+.abm-stage { border:1px solid var(--ku-border); border-radius:12px; padding:16px; text-align:center; background:var(--ku-white); }
+.abm-stage.s1 { border-top:4px solid #C7D0DE; }
+.abm-stage.s2 { border-top:4px solid var(--ku-gold); }
+.abm-stage.s3 { border-top:4px solid var(--ku-good); }
+.abm-stage .name { font-size:14px; font-weight:900; color:var(--ku-navy); text-transform:uppercase; letter-spacing:.04em; }
+.abm-stage .def { font-size:12px; color:var(--ku-muted); font-weight:600; margin-top:5px; line-height:1.45; }
+.abm-stage .tag { display:inline-block; margin-top:9px; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.04em; padding:2px 9px; border-radius:20px; }
+.abm-stage.s1 .tag { background:#EEF1F7; color:var(--ku-muted); }
+.abm-stage.s2 .tag { background:var(--ku-warn-bg); color:var(--ku-warn); }
+.abm-stage.s3 .tag { background:var(--ku-good-bg); color:var(--ku-good); }
+.abm-arrow { display:flex; align-items:center; justify-content:center; font-size:22px; color:var(--ku-muted); font-weight:900; padding:0 4px; }
+.abm-tl { display:flex; gap:14px; }
+.abm-tl .col { flex:1; border:1px solid var(--ku-border); border-radius:12px; padding:16px 18px; }
+.abm-tl .col.now { background:var(--ku-light); }
+.abm-tl .col.next { background:#F3F8FF; border-color:#BBD3F0; }
+.abm-tl .when { font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.06em; padding:2px 10px; border-radius:20px; display:inline-block; margin-bottom:10px; }
+.abm-tl .col.now .when { background:var(--ku-good-bg); color:var(--ku-good); }
+.abm-tl .col.next .when { background:#E3F0FF; color:var(--ku-blue); }
+.abm-tl ul { margin:0; padding:0; list-style:none; }
+.abm-tl li { position:relative; padding:6px 0 6px 18px; font-size:12.5px; line-height:1.5; border-bottom:1px solid var(--ku-border); }
+.abm-tl li:last-child { border-bottom:none; }
+.abm-tl li::before { content:''; position:absolute; left:2px; top:13px; width:6px; height:6px; border-radius:50%; background:var(--col-rollworks); }
+@media (max-width:760px){ .abm-two { grid-template-columns:1fr; } .abm-flow { grid-template-columns:1fr; } .abm-arrow { transform:rotate(90deg); padding:4px 0; } .abm-tl { flex-direction:column; } }
+
+/* MEDIA PLAN */
+.plan-grid { display:grid; grid-template-columns:1.55fr 1fr; gap:20px; margin-bottom:28px; }
+.plan-panel { background:var(--ku-white); border:1px solid var(--ku-border); border-radius:14px; padding:20px; display:flex; flex-direction:column; }
+.plan-ramp { background:var(--ku-light); border:1px solid var(--ku-border); border-left:4px solid var(--ku-gold); border-radius:11px; padding:14px 16px; margin-bottom:16px; }
+.plan-ramp .top { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; color:var(--ku-muted); }
+.plan-ramp .jump { display:flex; align-items:baseline; gap:9px; margin-top:5px; }
+.plan-ramp .jump .from { font-size:15px; font-weight:800; color:var(--ku-muted); }
+.plan-ramp .jump .arr { color:var(--ku-gold); font-weight:900; font-size:16px; }
+.plan-ramp .jump .to { font-size:28px; font-weight:900; color:var(--ku-navy); line-height:1; letter-spacing:-.02em; }
+.plan-ramp .jump .badge-up { font-size:10.5px; font-weight:800; background:var(--ku-warn-bg); color:var(--ku-warn); padding:2px 8px; border-radius:20px; }
+.plan-ramp .desc { font-size:12px; color:var(--ku-text); line-height:1.5; margin-top:7px; }
+.plan-tbl { width:100%; border-collapse:collapse; font-size:12.5px; }
+.plan-tbl th { text-align:left; padding:7px 8px; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.04em; color:var(--ku-muted); border-bottom:2px solid var(--ku-border); }
+.plan-tbl th.num, .plan-tbl td.num { text-align:right; }
+.plan-tbl td { padding:7px 8px; border-bottom:1px solid var(--ku-border); }
+.plan-tbl td.pf { font-weight:800; color:var(--ku-navy); }
+.plan-tbl td .sw { display:inline-block; width:9px; height:9px; border-radius:2px; margin-right:7px; vertical-align:middle; }
+.plan-tbl tfoot td { font-weight:900; color:var(--ku-navy); background:var(--ku-light); border-top:2px solid var(--ku-border); border-bottom:none; }
+.plan-cap { font-size:11px; color:var(--ku-muted); font-weight:600; margin-top:10px; line-height:1.5; }
+@media (max-width:860px){ .plan-grid { grid-template-columns:1fr; } }
+
+/* GLOSSARY */
+.gloss-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:14px; }
+.gloss-item { display:flex; gap:13px; align-items:flex-start; background:var(--ku-light); border:1px solid var(--ku-border); border-radius:11px; padding:14px 16px; }
+.gloss-item .ic { width:34px; height:34px; border-radius:8px; background:var(--ku-white); border:1px solid var(--ku-border); display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+.gloss-item .term { font-size:13px; font-weight:900; color:var(--ku-navy); }
+.gloss-item .def { font-size:12.5px; line-height:1.5; color:var(--ku-text); margin-top:3px; }
+.gloss-item .def .eg { color:var(--ku-muted); font-style:italic; }
+@media (max-width:720px){ .gloss-grid { grid-template-columns:1fr; } }
 
 /* PLATFORM CARDS */
 .platform-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(255px,1fr)); gap:16px; margin-bottom:28px; }
@@ -288,7 +368,6 @@ footer strong { color:var(--ku-muted); }
       <div class="perf-stat"><div class="num">4.8M</div><div class="cap">Total Impressions</div></div>
       <div class="perf-stat"><div class="num">22.3K+</div><div class="cap">Link Clicks</div></div>
       <div class="perf-stat"><div class="num">5</div><div class="cap">Markets Targeted</div></div>
-      <div class="perf-stat"><div class="num">3</div><div class="cap">Platforms Live</div></div>
     </div>
     <div class="perf-insights">
       <div class="perf-insight meta">
@@ -322,7 +401,6 @@ footer strong { color:var(--ku-muted); }
         <div class="metric-row"><div class="m-label">Total Link Clicks</div><div class="m-value">21,275</div></div>
         <div class="metric-row"><div class="m-label">Avg. CTR</div><div class="m-value">1.52%<br><span class="bmark good">✓ Above 1.3–2.0% bmark</span></div></div>
         <div class="metric-row"><div class="m-label">Total Page Engagements</div><div class="m-value">152,104</div></div>
-        <div class="metric-row"><div class="m-label">Active Audiences</div><div class="m-value">5</div></div>
       </div>
     </div>
     <div class="platform-card">
@@ -335,7 +413,6 @@ footer strong { color:var(--ku-muted); }
         <div class="metric-row"><div class="m-label">Total Link Clicks</div><div class="m-value">1,098</div></div>
         <div class="metric-row"><div class="m-label">Avg. CTR</div><div class="m-value">0.03%<br><span class="bmark good">✓ Consistent w/ KU Brand</span></div></div>
         <div class="metric-row"><div class="m-label">Avg. Dwell Time</div><div class="m-value">17.51s</div></div>
-        <div class="metric-row"><div class="m-label">Active Audiences</div><div class="m-value">4</div></div>
       </div>
     </div>
     <div class="platform-card">
@@ -348,7 +425,6 @@ footer strong { color:var(--ku-muted); }
         <div class="metric-row"><div class="m-label">Total Clicks</div><div class="m-value">10</div></div>
         <div class="metric-row"><div class="m-label">Avg. CTR</div><div class="m-value">0.03%<br><span class="bmark neutral">Display ABM benchmark</span></div></div>
         <div class="metric-row"><div class="m-label">Accounts Reached</div><div class="m-value">611</div></div>
-        <div class="metric-row"><div class="m-label">Active Audiences</div><div class="m-value">3</div></div>
       </div>
     </div>
     <div class="platform-card coming-soon-card">
@@ -405,20 +481,80 @@ footer strong { color:var(--ku-muted); }
     </div>
   </div>
 
-  <!-- OVERVIEW CHARTS -->
-  <div class="detail-grid">
-    <div class="chart-card">
-      <h3>📊 Meta Impressions by Month</h3>
-      <div class="chart-wrap"><canvas id="metaImpChart"></canvas></div>
+  <!-- ═══ FY26 MEDIA PLAN ═══ -->
+  <div class="section-label" style="margin-top:8px;">
+    <div class="accent-dot" style="background:var(--ku-navy)"></div>
+    <h2>FY26 Media Plan &amp; Spend Ramp</h2>
+    <span class="badge">Timing · Platform · Spend</span>
+  </div>
+  <div class="plan-grid">
+    <div class="chart-card" style="margin-bottom:0;">
+      <h3>📊 Monthly Spend by Platform</h3>
+      <div class="chart-wrap"><canvas id="planSpendChart"></canvas></div>
     </div>
-    <div class="chart-card">
-      <h3>📊 LinkedIn Impressions by Month</h3>
-      <div class="chart-wrap"><canvas id="liImpChart"></canvas></div>
+    <div class="plan-panel">
+      <div class="plan-ramp">
+        <div class="top">📈 June Ramp-Up</div>
+        <div class="jump"><span class="from">$9,592</span><span class="arr">→</span><span class="to">$25,100</span><span class="badge-up">▲ 2.6×</span></div>
+        <div class="desc">June spend more than doubles as <strong>YouTube / Online Video launches at scale</strong> and budget splits across separate <strong>Alumni</strong> and <strong>Business Executive</strong> campaigns.</div>
+      </div>
+      <table class="plan-tbl">
+        <thead><tr><th>Platform</th><th class="num">Planned Spend</th><th class="num">Est. Impr.</th></tr></thead>
+        <tbody>
+          <tr><td class="pf"><span class="sw" style="background:#1877F2"></span>Meta</td><td class="num">$10,890</td><td class="num">1,089,000</td></tr>
+          <tr><td class="pf"><span class="sw" style="background:#0A66C2"></span>LinkedIn</td><td class="num">$14,410</td><td class="num">1,441,000</td></tr>
+          <tr><td class="pf"><span class="sw" style="background:#FF6B35"></span>ABM Display</td><td class="num">$5,500</td><td class="num">220,000</td></tr>
+          <tr><td class="pf"><span class="sw" style="background:#FF0000"></span>YouTube / OLV</td><td class="num">$15,200</td><td class="num">760,000</td></tr>
+        </tbody>
+        <tfoot><tr><td>FY26 Total</td><td class="num">$46,000</td><td class="num">3,510,000</td></tr></tfoot>
+      </table>
+      <div class="plan-cap">Active plan, Mar–Jun 2026. Est. impressions based on education / B2B CPM benchmarks ($10 Meta &amp; LinkedIn, $25 ABM, $20 OLV).</div>
     </div>
   </div>
+
   <div class="chart-card">
-    <h3>📈 Meta CTR by Audience — May 2026</h3>
-    <div class="chart-wrap"><canvas id="metaCtrChart"></canvas></div>
+    <h3>🗺️ Planned Spend by Market <span style="font-weight:600;font-size:11px;color:var(--ku-muted);text-transform:none;letter-spacing:0;">· Mar–Jun 2026</span></h3>
+    <div class="chart-wrap" style="height:240px;"><canvas id="planMarketChart"></canvas></div>
+    <div class="plan-cap">Kansas City is the anchor market; remaining budget reflects the geographic expansion — Phoenix &amp; Wichita early, then Chicago, Dallas, and Denver layered in through spring/summer.</div>
+  </div>
+
+  <!-- ═══ GLOSSARY ═══ -->
+  <div class="section-label" style="margin-top:8px;">
+    <div class="accent-dot" style="background:var(--ku-muted)"></div>
+    <h2>Metric Glossary</h2>
+    <span class="badge">Quick Reference</span>
+  </div>
+  <div class="narrative-card">
+    <div class="gloss-grid">
+      <div class="gloss-item">
+        <div class="ic">👁️</div>
+        <div>
+          <div class="term">Impressions</div>
+          <div class="def">The number of times an ad was displayed on screen. Counts every view, including repeat views to the same person — a measure of reach and exposure. <span class="eg">e.g. 1.4M Meta impressions.</span></div>
+        </div>
+      </div>
+      <div class="gloss-item">
+        <div class="ic">🖱️</div>
+        <div>
+          <div class="term">Clicks</div>
+          <div class="def">The number of times someone clicked an ad to visit the destination (link clicks). A direct signal of interest and intent to learn more. <span class="eg">e.g. 21,275 Meta link clicks.</span></div>
+        </div>
+      </div>
+      <div class="gloss-item">
+        <div class="ic">🎯</div>
+        <div>
+          <div class="term">CTR — Click-Through Rate</div>
+          <div class="def">Clicks ÷ impressions, shown as a percent. Measures how compelling an ad is at driving action, independent of how many people saw it. <span class="eg">Education benchmark: 1.3–2.0% on Meta.</span></div>
+        </div>
+      </div>
+      <div class="gloss-item">
+        <div class="ic">⏱️</div>
+        <div>
+          <div class="term">Dwell Time</div>
+          <div class="def">The average time a viewer spends with an ad in-feed (a LinkedIn engagement metric). Higher dwell time signals the content held attention and was actually consumed. <span class="eg">e.g. 17.5s avg on LinkedIn.</span></div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -519,7 +655,6 @@ footer strong { color:var(--ku-muted); }
       <div class="stat-box"><div class="top-bar" style="background:var(--ku-good)"></div><div class="val">1.59%</div><div class="lbl">Avg. CTR</div></div>
       <div class="stat-box"><div class="top-bar" style="background:var(--ku-blue-dark)"></div><div class="val">55,980</div><div class="lbl">Page Engagements</div></div>
     </div>
-    <div class="note-info">📅 Full month data — <strong>May 1–31, 2026</strong>. Four audiences active simultaneously for the first time.</div>
     <div class="aud-table-wrap">
       <div class="aud-table-header" style="background:var(--col-meta);color:white;">
         <div class="plat-icon" style="background:rgba(255,255,255,.2)">📣</div>
@@ -653,7 +788,6 @@ footer strong { color:var(--ku-muted); }
       <div class="stat-box"><div class="top-bar" style="background:var(--ku-blue)"></div><div class="val">0.03%</div><div class="lbl">Avg. CTR</div></div>
       <div class="stat-box"><div class="top-bar" style="background:var(--ku-blue-dark)"></div><div class="val">17.51s</div><div class="lbl">Avg. Dwell Time</div></div>
     </div>
-    <div class="note-info">📅 Full month data — <strong>May 1–31, 2026</strong>. Four audiences active simultaneously.</div>
     <div class="aud-table-wrap">
       <div class="aud-table-header" style="background:var(--col-linkedin);color:white;">
         <div class="plat-icon" style="background:rgba(255,255,255,.2)">💼</div>
@@ -747,6 +881,87 @@ footer strong { color:var(--ku-muted); }
     </div>
   </div>
 
+  <!-- ═══ HOW ABM WORKS — EXPLAINER ═══ -->
+  <div class="section-label" style="margin-top:8px;">
+    <div class="accent-dot" style="background:var(--ku-blue)"></div>
+    <h2>How ABM Targeting Works</h2>
+    <span class="badge">Campaign Mechanics</span>
+  </div>
+
+  <div class="abm-explainer">
+    <p class="lead">Rollworks is an account-based marketing tool that serves digital ads to specific people at specific companies. Two different lists power the targeting, browser-cookie matching makes them ad-servable, and journey stages track how each company warms up over time.</p>
+
+    <!-- TWO LISTS -->
+    <div class="abm-sub"><span class="ic">📂</span>The Two Lists</div>
+    <div class="abm-two">
+      <div class="abm-box">
+        <h4>Account List — Who We Want to Reach</h4>
+        <div class="big">6,456 <small>target companies</small></div>
+        <p>A curated set of <strong>organizations</strong> identified as good-fit accounts, built on company size, location, firmographic attributes, and education-specific exclusions. This is the universe of companies whose employees we want to influence — it defines <em>where</em> reach counts, and it's what journey stages are measured against.</p>
+      </div>
+      <div class="abm-box">
+        <h4>Contact List — Who We Actually Serve Ads To</h4>
+        <div class="big">20,964 <small>matched contacts</small></div>
+        <p>A list of <strong>individual people</strong> — in this case KU Alumni — uploaded as emails and matched to ad-servable cookies. The KU alumni list had an <span class="hl-green">excellent match rate</span>, producing a large, high-quality targetable audience. This is the "targeting list" the ads are delivered against.</p>
+      </div>
+    </div>
+
+    <!-- COOKIE MATCHING -->
+    <div class="abm-sub"><span class="ic">🍪</span>Contact-to-Cookie Matching</div>
+    <div class="abm-note">
+      <span class="ic">🔗</span>
+      <div>A contact list is just emails — ads can't be served to an email. Rollworks matches each email address to the <strong>browser cookies</strong> tied to that person's devices. Because one person browses on multiple devices and browsers, it's normal to match <strong>3–10 cookies per email</strong>. That's why a contact list of 20,964 produces a much larger servable audience than 20,964 — and why impressions scale well above the raw list size.</div>
+    </div>
+
+    <!-- JOURNEY STAGES -->
+    <div class="abm-sub"><span class="ic">🚦</span>Journey Stages — How Companies Progress</div>
+    <p class="lead" style="margin-bottom:14px;">Every account on the list is assigned a stage based on website activity. As a company's employees view more pages, the account moves up — letting us measure warming interest, not just ad delivery.</p>
+    <div class="abm-flow">
+      <div class="abm-stage s1">
+        <div class="name">Unaware</div>
+        <div class="def">No page views yet</div>
+        <span class="tag">Cold</span>
+      </div>
+      <div class="abm-arrow">→</div>
+      <div class="abm-stage s2">
+        <div class="name">Aware</div>
+        <div class="def">At least 1 page view</div>
+        <span class="tag">Warming</span>
+      </div>
+      <div class="abm-arrow">→</div>
+      <div class="abm-stage s3">
+        <div class="name">Engaged</div>
+        <div class="def">2+ page views</div>
+        <span class="tag">✓ 69 accounts</span>
+      </div>
+    </div>
+    <div class="abm-note" style="margin-top:14px;border-left-color:var(--ku-good);">
+      <span class="ic">📈</span>
+      <div>As of May 31, <strong>69 target accounts have progressed to Engaged</strong> (2+ page views) — including Bank of America, Charles Schwab, Fidelity Investments, Edward Jones, Raymond James, Burns &amp; McDonnell, HNTB, Oracle, Microsoft, Workday, Thermo Fisher, and the Federal Reserve Bank of Kansas City. These are the warmest accounts in the funnel and the strongest signal that the right companies are paying attention.</div>
+    </div>
+
+    <!-- CAMPAIGN STRUCTURE -->
+    <div class="abm-sub"><span class="ic">🗺️</span>How the Campaigns Are Structured</div>
+    <div class="abm-tl">
+      <div class="col now">
+        <span class="when">Now · May</span>
+        <ul>
+          <li>One campaign per location — <strong>Chicago, Wichita, and Dallas</strong>.</li>
+          <li>Each targets the <strong>KU alumni contact list</strong> plus <strong>contextual keywords</strong> so ads appear on relevant content in that metro.</li>
+          <li>Balanced delivery at ~10,000 impressions per market.</li>
+        </ul>
+      </div>
+      <div class="col next">
+        <span class="when">Next · June</span>
+        <ul>
+          <li>Budget <strong>doubles</strong>, split across two audience tracks.</li>
+          <li>Separate campaigns for <strong>Alumni</strong> and <strong>Business Executives</strong>.</li>
+          <li>Cleaner read on which audience drives engagement, plus expanded reach into the broader exec account list.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
   <!-- TOTAL KPI ROW -->
   <div class="detail-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:24px;">
     <div class="chart-card" style="text-align:center;">
@@ -783,7 +998,6 @@ footer strong { color:var(--ku-muted); }
           <th style="text-align:right;padding:10px 16px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ku-muted);">Impressions</th>
           <th style="text-align:right;padding:10px 16px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ku-muted);">Clicks</th>
           <th style="text-align:right;padding:10px 16px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ku-muted);">CTR</th>
-          <th style="text-align:right;padding:10px 16px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ku-muted);">Spend</th>
         </tr>
       </thead>
       <tbody>
@@ -792,28 +1006,24 @@ footer strong { color:var(--ku-muted); }
           <td style="padding:10px 16px;text-align:right;">10,106</td>
           <td style="padding:10px 16px;text-align:right;">4</td>
           <td style="padding:10px 16px;text-align:right;">0.04%</td>
-          <td style="padding:10px 16px;text-align:right;">$435</td>
         </tr>
         <tr style="border-bottom:1px solid var(--ku-border);">
           <td style="padding:10px 16px;font-weight:700;color:var(--ku-navy);">Dallas Alumni</td>
           <td style="padding:10px 16px;text-align:right;">10,010</td>
           <td style="padding:10px 16px;text-align:right;">3</td>
           <td style="padding:10px 16px;text-align:right;">0.03%</td>
-          <td style="padding:10px 16px;text-align:right;">$434</td>
         </tr>
         <tr style="border-bottom:1px solid var(--ku-border);">
           <td style="padding:10px 16px;font-weight:700;color:var(--ku-navy);">Wichita Alumni</td>
           <td style="padding:10px 16px;text-align:right;">10,008</td>
           <td style="padding:10px 16px;text-align:right;">3</td>
           <td style="padding:10px 16px;text-align:right;">0.03%</td>
-          <td style="padding:10px 16px;text-align:right;">$438</td>
         </tr>
         <tr style="background:var(--ku-light);font-weight:800;">
           <td style="padding:10px 16px;color:var(--ku-navy);">Contact Targeting Total</td>
           <td style="padding:10px 16px;text-align:right;">30,124</td>
           <td style="padding:10px 16px;text-align:right;">10</td>
           <td style="padding:10px 16px;text-align:right;">0.03%</td>
-          <td style="padding:10px 16px;text-align:right;">$1,307</td>
         </tr>
       </tbody>
     </table>
@@ -1020,113 +1230,67 @@ function setLIMonth(month, btn) {
 }
 
 // ─── CHARTS ───
-const kuBlue = '#0051A5';
-const kuCrimson = '#E8000D';
+const kuBlue = '#0051ba';     // Kansas Blue
+const kuCrimson = '#e8000d';  // Crimson
+const kuNight = '#003459';    // Night
+const kuLake = '#2767ff';     // Lake
+const kuWheat = '#f2a900';    // Wheat
+const kuSky = '#73cbf2';      // Sky
 const metaBlue = '#1877F2';
 const liBlue = '#0A66C2';
-const audienceColors = ['#0051A5','#E8000D','#F0A500','#16A34A','#6C3FC5'];
+const audienceColors = [kuBlue, kuCrimson, kuWheat, kuNight, kuLake];
 
 // Chart defaults
-Chart.defaults.font.family = "'Segoe UI',Arial,Helvetica,sans-serif";
+Chart.defaults.font.family = "'Public Sans','Segoe UI',Arial,Helvetica,sans-serif";
 Chart.defaults.color = '#5A6A82';
 
-// Meta Impressions by Month (Overview)
-new Chart(document.getElementById('metaImpChart'), {
+// FY26 Media Plan — Monthly Spend by Platform (Overview)
+new Chart(document.getElementById('planSpendChart'), {
   type: 'bar',
   data: {
-    labels: ['March (Mar 26–31)', 'April (Apr 1–30)', 'May (May 1–31)'],
-    datasets: [{
-      label: 'Impressions',
-      data: [288581, 546199, 564907],
-      backgroundColor: [metaBlue+'99', metaBlue+'CC', metaBlue],
-      borderColor: metaBlue,
-      borderWidth: 2,
-      borderRadius: 6,
-    }]
-  },
-  options: {
-    responsive: true, maintainAspectRatio: false,
-    plugins: { legend: { display: false } },
-    scales: {
-      y: { beginAtZero: true, grid: { color:'#EEF1F7' }, ticks: { callback: v => (v/1000).toFixed(0)+'K' } },
-      x: { grid: { display: false } }
-    }
-  }
-});
-
-// LinkedIn Impressions by Month (Overview)
-new Chart(document.getElementById('liImpChart'), {
-  type: 'bar',
-  data: {
-    labels: ['March (Mar 26–31)', 'April (Apr 1–30)', 'May (May 1–31)'],
-    datasets: [{
-      label: 'Impressions',
-      data: [18065, 1907843, 1476523],
-      backgroundColor: [liBlue+'99', liBlue+'CC', liBlue],
-      borderColor: liBlue,
-      borderWidth: 2,
-      borderRadius: 6,
-    }]
-  },
-  options: {
-    responsive: true, maintainAspectRatio: false,
-    plugins: { legend: { display: false } },
-    scales: {
-      y: { beginAtZero: true, grid: { color:'#EEF1F7' }, ticks: { callback: v => (v/1000).toFixed(0)+'K' } },
-      x: { grid: { display: false } }
-    }
-  }
-});
-
-// Meta CTR by Audience — May (Overview)
-new Chart(document.getElementById('metaCtrChart'), {
-  type: 'bar',
-  data: {
-    labels: ['KC Business Execs', 'KS (Wichita) Biz Alumni + Execs', 'Chicago Biz Alumni + Execs', 'Dallas Biz Alumni + Execs'],
+    labels: ['Feb', 'Mar', 'Apr', 'May', 'Jun'],
     datasets: [
-      {
-        label: 'CTR %',
-        data: [1.43, 1.83, 1.51, 1.77],
-        backgroundColor: [kuBlue, kuCrimson, '#F0A500', '#16A34A'],
-        borderColor: [kuBlue, kuCrimson, '#F0A500', '#16A34A'],
-        borderWidth: 2,
-        borderRadius: 6,
-      },
-      {
-        label: 'Benchmark Min (1.3%)',
-        data: [1.3, 1.3, 1.3, 1.3],
-        type: 'line',
-        borderColor: '#DC2626',
-        borderWidth: 2,
-        borderDash: [6,4],
-        pointRadius: 0,
-        fill: false,
-      },
-      {
-        label: 'Benchmark Max (2.0%)',
-        data: [2.0, 2.0, 2.0, 2.0],
-        type: 'line',
-        borderColor: '#16A34A',
-        borderWidth: 2,
-        borderDash: [6,4],
-        pointRadius: 0,
-        fill: false,
-      }
+      { label: 'Meta',          data: [1000, 1639, 3247, 3684, 3800],  backgroundColor: '#1877F2' },
+      { label: 'LinkedIn',      data: [1000, 2000, 4410, 4408, 4800],  backgroundColor: '#0A66C2' },
+      { label: 'ABM / Display', data: [750,  0,    0,    1500, 4000],  backgroundColor: '#FF6B35' },
+      { label: 'YouTube / OLV', data: [0,    0,    0,    0,    12500], backgroundColor: '#FF0000' },
     ]
   },
   options: {
     responsive: true, maintainAspectRatio: false,
     plugins: {
-      legend: { position:'top', labels:{ usePointStyle:true, padding:16 } },
-      tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + ctx.parsed.y + '%' } }
+      legend: { position: 'bottom', labels: { boxWidth: 11, boxHeight: 11, font: { size: 11 }, padding: 12 } },
+      tooltip: { callbacks: { label: c => c.dataset.label + ': $' + c.parsed.y.toLocaleString() } }
     },
     scales: {
-      y: {
-        beginAtZero: false, min: 0.8, max: 2.5,
-        grid: { color:'#EEF1F7' },
-        ticks: { callback: v => v.toFixed(1)+'%' }
-      },
-      x: { grid: { display: false } }
+      x: { stacked: true, grid: { display: false } },
+      y: { stacked: true, beginAtZero: true, grid: { color:'#EEF1F7' }, ticks: { callback: v => '$' + (v/1000).toFixed(0) + 'K' } }
+    }
+  }
+});
+
+// FY26 Media Plan — Planned Spend by Market (Overview)
+new Chart(document.getElementById('planMarketChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Kansas City', 'Chicago', 'Dallas', 'Denver', 'Wichita', 'Phoenix'],
+    datasets: [{
+      label: 'Planned Spend',
+      data: [12654, 8798, 8798, 6275, 5122, 4341],
+      backgroundColor: [kuBlue, kuNight, kuLake, kuWheat, '#FF6B35', kuSky],
+      borderRadius: 6,
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: c => '$' + c.parsed.x.toLocaleString() } }
+    },
+    scales: {
+      x: { beginAtZero: true, grid: { color:'#EEF1F7' }, ticks: { callback: v => '$' + (v/1000).toFixed(0) + 'K' } },
+      y: { grid: { display: false } }
     }
   }
 });
@@ -1139,9 +1303,9 @@ new Chart(document.getElementById('metaTrendChart'), {
     datasets: [
       { label: 'KC Business Execs', data: [2.14, 1.97, 1.43], borderColor: kuBlue, backgroundColor: kuBlue+'22', borderWidth: 2.5, pointRadius: 5, tension: 0.3, fill: true },
       { label: 'AZ Business Execs', data: [1.14, 1.25, null], borderColor: kuCrimson, backgroundColor: kuCrimson+'22', borderWidth: 2.5, pointRadius: 5, tension: 0.3, fill: true },
-      { label: 'KS (Wichita)', data: [null, 1.62, 1.83], borderColor: '#F0A500', backgroundColor: '#F0A50022', borderWidth: 2.5, pointRadius: 5, tension: 0.3, fill: true },
-      { label: 'Chicago', data: [null, null, 1.51], borderColor: '#16A34A', backgroundColor: '#16A34A22', borderWidth: 2.5, pointRadius: 5, tension: 0.3, fill: true },
-      { label: 'Dallas', data: [null, null, 1.77], borderColor: '#6C3FC5', backgroundColor: '#6C3FC522', borderWidth: 2.5, pointRadius: 5, tension: 0.3, fill: true },
+      { label: 'KS (Wichita)', data: [null, 1.62, 1.83], borderColor: kuWheat, backgroundColor: kuWheat+'22', borderWidth: 2.5, pointRadius: 5, tension: 0.3, fill: true },
+      { label: 'Chicago', data: [null, null, 1.51], borderColor: kuNight, backgroundColor: kuNight+'22', borderWidth: 2.5, pointRadius: 5, tension: 0.3, fill: true },
+      { label: 'Dallas', data: [null, null, 1.77], borderColor: kuLake, backgroundColor: kuLake+'22', borderWidth: 2.5, pointRadius: 5, tension: 0.3, fill: true },
       { label: 'Bmark Min (1.3%)', data: [1.3, 1.3, 1.3], borderColor: '#DC2626', borderWidth: 1.5, borderDash:[6,4], pointRadius:0, fill:false },
       { label: 'Bmark Max (2.0%)', data: [2.0, 2.0, 2.0], borderColor: '#16A34A', borderWidth: 1.5, borderDash:[6,4], pointRadius:0, fill:false },
     ]
